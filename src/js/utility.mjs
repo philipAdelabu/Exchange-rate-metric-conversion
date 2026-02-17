@@ -7,19 +7,27 @@ export function switchTab(tab) {
 
         if (tab === 'currency') {
             loadAnimation();
+            document.getElementById('currencyResult').innerText = "";
             document.querySelectorAll('.tab')[0].classList.add('active');
             document.getElementById('currency').classList.add('active');
         } else {
+            loadAnimation(true);
+            document.getElementById('metricResult').innerText = "";
+            document.getElementById('FromMetricType').innerHTML = "";
+            document.getElementById('ToMetricType').innerHTML = "";
+            document.getElementById('metricValue').value = "";
+            document.getElementById('category').value = "";
             getCategories();
             document.querySelectorAll('.tab')[1].classList.add('active');
             document.getElementById('metric').classList.add('active');
+            loadAnimation(false);
         }
     }
 
 
 
    export async function convertCurrency() {
-        document.getElementById('currencyResult').innerText = "";
+        
         const amount = parseFloat(document.getElementById('amount').value);
         const from = document.getElementById('fromCurrency').value;
         const to = document.getElementById('toCurrency').value;
@@ -66,7 +74,6 @@ export function switchTab(tab) {
     }
 
     export async function getCategories(){
-       loadAnimation(true);
        const URL = MetricBaseURL+"categories";
        const resp = await fetch(URL);
        const res = await resp.json();
@@ -106,7 +113,6 @@ export function switchTab(tab) {
         });
 
        }
-      loadAnimation(false);
     }
 
     export async function getMetricResult(from, to, value, category){
@@ -116,7 +122,7 @@ export function switchTab(tab) {
         const res = await resp.json();
         if(res){
         document.getElementById('metricResult').innerText =
-                    `${value} ${from} = ${res.result.toFixed(2)} ${to}`;
+                    `${value} ${from} = ${res.result.toFixed(4)} ${to}`;
         }
        loadAnimation(false);
     }
