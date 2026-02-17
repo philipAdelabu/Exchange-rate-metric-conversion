@@ -1,5 +1,5 @@
 import {MetricBaseURL, EXCH_RATE_URL } from "./config";
-
+import {saveToStorage , getFromStorage} from "./storage";
 
 export function switchTab(tab) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -8,15 +8,21 @@ export function switchTab(tab) {
         if (tab === 'currency') {
             loadAnimation();
             document.getElementById('currencyResult').innerText = "";
+            const lastCurrencyConversion = getFromStorage('lastCurrencyConversion');
+            if(lastCurrencyConversion){
+               document.getElementById('currencyResult').innerText = lastCurrencyConversion;
+            }
+
             document.querySelectorAll('.tab')[0].classList.add('active');
             document.getElementById('currency').classList.add('active');
         } else {
-            loadAnimation(true);
+            
             document.getElementById('metricResult').innerText = "";
             document.getElementById('FromMetricType').innerHTML = "";
             document.getElementById('ToMetricType').innerHTML = "";
             document.getElementById('metricValue').value = "";
             document.getElementById('category').value = "";
+            loadAnimation(true);
             getCategories();
             document.querySelectorAll('.tab')[1].classList.add('active');
             document.getElementById('metric').classList.add('active');
@@ -42,8 +48,9 @@ export function switchTab(tab) {
        if(rates){
         const usdAmount = amount / rates[from];
         const converted = usdAmount * rates[to];
-        document.getElementById('currencyResult').innerText =
-            `${amount} ${from} = ${converted.toFixed(2)} ${to}`;
+        const result =  `${amount} ${from} = ${converted.toFixed(2)} ${to}`;
+        document.getElementById('currencyResult').innerText = result;
+        saveToStorage('lastCurrencyConversion', result );
         loadAnimation(false);
        }
     }
@@ -60,7 +67,11 @@ export function switchTab(tab) {
             document.getElementById('metricResult').innerText = "Please enter a valid value.";
             return;
         }
-        getMetricResult(from, to, value, category);       
+        loadAnimation(true);
+       const result = getMetricResult(from, to, value, category);   
+        saveToStorage('lastMetricConversion', result);
+        document.getElementById('metricResult').innerText = result;  
+        loadAnimation(false);  
     }
 
     export async function getRate(url, from){
@@ -116,15 +127,13 @@ export function switchTab(tab) {
     }
 
     export async function getMetricResult(from, to, value, category){
-        loadAnimation(true);
         const URL = MetricBaseURL+"convert?from="+from+"&to="+to+"&value="+value+"&category="+category;
         const resp = await fetch(URL);
         const res = await resp.json();
         if(res){
-        document.getElementById('metricResult').innerText =
-                    `${value} ${from} = ${res.result.toFixed(4)} ${to}`;
+         const result =  `${value} ${from} = ${res.result.toFixed(4)} ${to}`;
+          return result;
         }
-       loadAnimation(false);
     }
 
  export async function loadTemplate(path){
@@ -154,3 +163,4 @@ export  function loadAnimation(status=false){
             loader.style.display = 'none';
        }
 }
+

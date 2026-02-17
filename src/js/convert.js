@@ -1,5 +1,5 @@
 import { switchTab, convertCurrency, convertMetric, loadPartials} from "./utility.mjs";
-
+import { getFromStorage } from "./storage.js";
 
 export default function init() {
    
