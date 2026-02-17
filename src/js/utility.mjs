@@ -1,5 +1,5 @@
-import { exchAPIkey, MetricBaseURL } from "./config";
-const EXCH_RATE_URL = `https://v6.exchangerate-api.com/v6/${exchAPIkey}`;
+import {MetricBaseURL, EXCH_RATE_URL } from "./config";
+
 
 export function switchTab(tab) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -19,6 +19,7 @@ export function switchTab(tab) {
 
 
    export async function convertCurrency() {
+        document.getElementById('currencyResult').innerText = "";
         const amount = parseFloat(document.getElementById('amount').value);
         const from = document.getElementById('fromCurrency').value;
         const to = document.getElementById('toCurrency').value;
@@ -28,59 +29,30 @@ export function switchTab(tab) {
             return;
         }
        
-       let loader = document.querySelector("#loader-container");
-       let container = document.querySelector(".container");
-       container.style.display = 'none';
-       loader.style.display = 'block';
-
+       loadAnimation(true);
        const rates = await getRate(EXCH_RATE_URL, from);
-   
        if(rates){
-       container.style.display = 'block';
-       loader.style.display = 'none';
         const usdAmount = amount / rates[from];
         const converted = usdAmount * rates[to];
         document.getElementById('currencyResult').innerText =
             `${amount} ${from} = ${converted.toFixed(2)} ${to}`;
+        loadAnimation(false);
        }
     }
 
    export function convertMetric() {
-        const value = parseFloat(document.getElementById('metricValue').value);
-        const type = document.getElementById('metricType').value;
+        document.getElementById('metricResult').innerText = "";
+        const category = parseFloat(document.getElementById('category').value);
+        const from = document.getElementById('FromMetricType').value;
+        const to = document.getElementById('ToMetricType').value;
+
+        const value = document.getElementById('metricValue').value;
 
         if (isNaN(value)) {
             document.getElementById('metricResult').innerText = "Please enter a valid value.";
             return;
         }
-
-        let result;
-
-        switch (type) {
-            case "km-miles":
-                result = value * 0.621371;
-                document.getElementById('metricResult').innerText =
-                    `${value} km = ${result.toFixed(2)} miles`;
-                break;
-
-            case "miles-km":
-                result = value / 0.621371;
-                document.getElementById('metricResult').innerText =
-                    `${value} miles = ${result.toFixed(2)} km`;
-                break;
-
-            case "kg-lbs":
-                result = value * 2.20462;
-                document.getElementById('metricResult').innerText =
-                    `${value} kg = ${result.toFixed(2)} lbs`;
-                break;
-
-            case "lbs-kg":
-                result = value / 2.20462;
-                document.getElementById('metricResult').innerText =
-                    `${value} lbs = ${result.toFixed(2)} kg`;
-                break;
-        }
+        getMetricResult(from, to, value, category);       
     }
 
     export async function getRate(url, from){
@@ -107,7 +79,45 @@ export function switchTab(tab) {
          option.innerText = item.name;
          categories.appendChild(option);
         });
+        categories.addEventListener("change", async (e) => {
+            const categoryId = e.target.value;
+            const typesURL = MetricBaseURL+"units/"+categoryId;
+            const resp = await fetch(typesURL);
+            const res = await resp.json();
+            const fromSelect = document.querySelector("#FromMetricType");
+            const toSelect = document.querySelector("#ToMetricType");
+            fromSelect.innerHTML = "";
+            toSelect.innerHTML = "";
+            if(res){
+                const units = res.units;
+                document.getElementById("category").value = res.category;
+                units.forEach( item => {
+                    let option1 = document.createElement("option");
+                    option1.setAttribute("value", item.value);
+                    option1.innerText = item.label;
+                    fromSelect.appendChild(option1);
+
+                    let option2 = document.createElement("option");
+                    option2.setAttribute("value", item.value);
+                    option2.innerText = item.label;
+                    toSelect.appendChild(option2);
+                });
+            }
+        });
+
        }
+      loadAnimation(false);
+    }
+
+    export async function getMetricResult(from, to, value, category){
+        loadAnimation(true);
+        const URL = MetricBaseURL+"convert?from="+from+"&to="+to+"&value="+value+"&category="+category;
+        const resp = await fetch(URL);
+        const res = await resp.json();
+        if(res){
+        document.getElementById('metricResult').innerText =
+                    `${value} ${from} = ${res.result.toFixed(2)} ${to}`;
+        }
        loadAnimation(false);
     }
 

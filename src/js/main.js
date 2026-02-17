@@ -29,14 +29,13 @@ document.querySelector('#app').innerHTML = `
         <select id="categories" >
            <option> -- select a category -- </option>
         </select>
+        <label for="FromMetricType">From:</label>
+        <select id="FromMetricType"></select>
 
-        <select id="metricType">
-            <option value="km-miles">Kilometers to Miles</option>
-            <option value="miles-km">Miles to Kilometers</option>
-            <option value="kg-lbs">Kilograms to Pounds</option>
-            <option value="lbs-kg">Pounds to Kilograms</option>
-        </select>
-
+        <label for="ToMetricType">To:</label>
+        <select id="ToMetricType"></select>
+        <input type="hidden" id="category">
+        <input type="number" id="metricValue" placeholder="Enter Value"> 
         <button>Convert</button>
         <div class="result" id="metricResult"></div>
     </div>
