@@ -1,24 +1,53 @@
-import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from '../counter.js'
+import '../css/style.css';
+
+import viteLogo from '/images/vite.svg'
+import init from "./convert.js";
 
 document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
+   
+<div class="container">
+    <h2>Converter</h2>
+
+    <div class="tabs">
+        <div id="currencyTab" class="tab active">Currency</div>
+        <div id="metricTab" class="tab">Metric</div>
     </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
+
+    <!-- Currency Converter -->
+    <div id="currency" class="section active">
+        <input type="number" id="amount" placeholder="Enter Amount">
+
+        <select id="fromCurrency">
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+        </select>
+
+        <select id="toCurrency">
+            <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
+            <option value="GBP">GBP</option>
+        </select>
+
+        <button>Convert</button>
+        <div class="result" id="currencyResult"></div>
+    </div>
+
+    <!-- Metric Converter -->
+    <div id="metric" class="section">
+        <input type="number" id="metricValue" placeholder="Enter Value">
+
+        <select id="metricType">
+            <option value="km-miles">Kilometers to Miles</option>
+            <option value="miles-km">Miles to Kilometers</option>
+            <option value="kg-lbs">Kilograms to Pounds</option>
+            <option value="lbs-kg">Pounds to Kilograms</option>
+        </select>
+
+        <button>Convert</button>
+        <div class="result" id="metricResult"></div>
+    </div>
+</div>
 `
 
-setupCounter(document.querySelector('#counter'))
+init();

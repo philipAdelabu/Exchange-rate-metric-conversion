@@ -7,5 +7,5 @@ It is a minimalistic project requirement for WDD330 course from the Bragham Youn
 An application that convert currency values across the world. It also has the capability to conver dimension metric from one dimension to another.
 
 ### API needed 
-- (Exchange Rate API)[https://exchangerate-api.com]
-- (Unit converted API)[https://unitconvr.com]
+- (Exchange Rate API) [https://exchangerate-api.com]
+- (Unit converted API) [https://unitconvr.com]
