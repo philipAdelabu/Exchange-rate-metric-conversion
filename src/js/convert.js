@@ -1,7 +1,9 @@
-import { switchTab, convertCurrency, convertMetric} from "./utility.mjs";
+import { switchTab, convertCurrency, convertMetric, loadPartials} from "./utility.mjs";
 
 
 export default function init() {
+   
+
     const currency = document.querySelector("#currencyTab");
     currency.addEventListener('click', () => {
           switchTab('currency');
@@ -14,4 +16,6 @@ export default function init() {
     const buttons = document.querySelectorAll('button');
     buttons[0].addEventListener('click', convertCurrency);
     buttons[1].addEventListener('click', convertMetric);
+
+    loadPartials();
 }

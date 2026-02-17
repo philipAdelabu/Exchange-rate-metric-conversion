@@ -1,3 +1,6 @@
+import { exchAPIkey } from "./config";
+const EXCH_RATE_URL = `https://v6.exchangerate-api.com/v6/${exchAPIkey}`;
+
 export function switchTab(tab) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -11,28 +14,33 @@ export function switchTab(tab) {
         }
     }
 
-    // Sample static exchange rates (base USD)
-    const rates = {
-        USD: 1,
-        EUR: 0.92,
-        GBP: 0.78
-    };
 
-   export function convertCurrency() {
+
+   export async function convertCurrency() {
         const amount = parseFloat(document.getElementById('amount').value);
         const from = document.getElementById('fromCurrency').value;
         const to = document.getElementById('toCurrency').value;
-
+        
         if (isNaN(amount)) {
             document.getElementById('currencyResult').innerText = "Please enter a valid amount.";
             return;
         }
+       
+       let loader = document.querySelector("#loader-container");
+       let container = document.querySelector(".container");
+       container.style.display = 'none';
+       loader.style.display = 'block';
 
+       const rates = await getRate(EXCH_RATE_URL, from);
+   
+       if(rates){
+       container.style.display = 'block';
+       loader.style.display = 'none';
         const usdAmount = amount / rates[from];
         const converted = usdAmount * rates[to];
-
         document.getElementById('currencyResult').innerText =
             `${amount} ${from} = ${converted.toFixed(2)} ${to}`;
+       }
     }
 
    export function convertMetric() {
@@ -72,3 +80,28 @@ export function switchTab(tab) {
                 break;
         }
     }
+
+    export async function getRate(url, from){
+       const URL = url+"/latest/"+from;
+       console.log(URL)
+       const resp = await fetch(URL); 
+       const res = await resp.json();
+       if(res.result === "success")
+         return res.conversion_rates;
+       return undefined;
+    }
+
+ export async function loadTemplate(path){
+   const res = await fetch(path);
+   const template = await res.text();
+   return template;
+}
+
+export async function loadPartials(){
+  const currencies = await loadTemplate("/partials/currencies.html");
+  const fromCurrency = document.querySelector("#fromCurrency");
+  const toCurrency = document.querySelector("#toCurrency");
+  fromCurrency.innerHTML = currencies;
+  toCurrency.innerHTML = currencies;
+ 
+}

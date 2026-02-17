@@ -1,7 +1,9 @@
 import '../css/style.css';
+import '../css/loader.css';
 
 import viteLogo from '/images/vite.svg'
 import init from "./convert.js";
+
 
 document.querySelector('#app').innerHTML = `
    
@@ -17,17 +19,9 @@ document.querySelector('#app').innerHTML = `
     <div id="currency" class="section active">
         <input type="number" id="amount" placeholder="Enter Amount">
 
-        <select id="fromCurrency">
-            <option value="USD">USD</option>
-            <option value="EUR">EUR</option>
-            <option value="GBP">GBP</option>
-        </select>
+        <select id="fromCurrency"></select>
 
-        <select id="toCurrency">
-            <option value="EUR">EUR</option>
-            <option value="USD">USD</option>
-            <option value="GBP">GBP</option>
-        </select>
+        <select id="toCurrency"></select>
 
         <button>Convert</button>
         <div class="result" id="currencyResult"></div>
@@ -48,6 +42,13 @@ document.querySelector('#app').innerHTML = `
         <div class="result" id="metricResult"></div>
     </div>
 </div>
+<div id="loader-container">
+<div class="loader">
+    <span></span>
+    <span></span>
+</div>
+</div>
+
 `
 
 init();
