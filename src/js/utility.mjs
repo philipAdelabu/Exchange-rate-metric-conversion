@@ -16,13 +16,13 @@ export function switchTab(tab) {
             document.querySelectorAll('.tab')[0].classList.add('active');
             document.getElementById('currency').classList.add('active');
         } else {
-            
+             loadAnimation(true);
             document.getElementById('metricResult').innerText = "";
             document.getElementById('FromMetricType').innerHTML = "";
             document.getElementById('ToMetricType').innerHTML = "";
             document.getElementById('metricValue').value = "";
             document.getElementById('category').value = "";
-            loadAnimation(true);
+           
             getCategories();
             document.querySelectorAll('.tab')[1].classList.add('active');
             document.getElementById('metric').classList.add('active');
@@ -50,12 +50,12 @@ export function switchTab(tab) {
         const converted = usdAmount * rates[to];
         const result =  `${amount} ${from} = ${converted.toFixed(2)} ${to}`;
         document.getElementById('currencyResult').innerText = result;
-        saveToStorage('lastCurrencyConversion', result );
+        saveToStorage('lastCurrencyConversion', result);
         loadAnimation(false);
        }
     }
 
-   export function convertMetric() {
+   export async function convertMetric() {
         document.getElementById('metricResult').innerText = "";
         const category = parseFloat(document.getElementById('category').value);
         const from = document.getElementById('FromMetricType').value;
@@ -68,9 +68,11 @@ export function switchTab(tab) {
             return;
         }
         loadAnimation(true);
-       const result = getMetricResult(from, to, value, category);   
+       const result = await getMetricResult(from, to, value, category); 
+       if(result){  
         saveToStorage('lastMetricConversion', result);
-        document.getElementById('metricResult').innerText = result;  
+        document.getElementById('metricResult').innerText = result; 
+       } 
         loadAnimation(false);  
     }
 
@@ -85,6 +87,7 @@ export function switchTab(tab) {
     }
 
     export async function getCategories(){
+        loadAnimation(true)
        const URL = MetricBaseURL+"categories";
        const resp = await fetch(URL);
        const res = await resp.json();
@@ -124,6 +127,7 @@ export function switchTab(tab) {
         });
 
        }
+       loadAnimation(false);
     }
 
     export async function getMetricResult(from, to, value, category){
