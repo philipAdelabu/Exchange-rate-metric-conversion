@@ -1,4 +1,4 @@
-import { exchAPIkey } from "./config";
+import { exchAPIkey, MetricBaseURL } from "./config";
 const EXCH_RATE_URL = `https://v6.exchangerate-api.com/v6/${exchAPIkey}`;
 
 export function switchTab(tab) {
@@ -6,9 +6,11 @@ export function switchTab(tab) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
 
         if (tab === 'currency') {
+            loadAnimation();
             document.querySelectorAll('.tab')[0].classList.add('active');
             document.getElementById('currency').classList.add('active');
         } else {
+            getCategories();
             document.querySelectorAll('.tab')[1].classList.add('active');
             document.getElementById('metric').classList.add('active');
         }
@@ -91,6 +93,24 @@ export function switchTab(tab) {
        return undefined;
     }
 
+    export async function getCategories(){
+       loadAnimation(true);
+       const URL = MetricBaseURL+"categories";
+       const resp = await fetch(URL);
+       const res = await resp.json();
+       const categories = document.querySelector("#categories");
+       if(res){
+        const cat = res.categories;
+         cat.forEach( item => {
+         let option = document.createElement("option");
+         option.setAttribute("value", item.id);
+         option.innerText = item.name;
+         categories.appendChild(option);
+        });
+       }
+       loadAnimation(false);
+    }
+
  export async function loadTemplate(path){
    const res = await fetch(path);
    const template = await res.text();
@@ -104,4 +124,17 @@ export async function loadPartials(){
   fromCurrency.innerHTML = currencies;
   toCurrency.innerHTML = currencies;
  
+}
+
+export  function loadAnimation(status=false){
+      let loader = document.querySelector("#loader-container");
+       let container = document.querySelector(".container");
+
+       if(status == true){
+           container.style.display = 'none';
+           loader.style.display = 'block';
+       }else{
+            container.style.display = 'block';
+            loader.style.display = 'none';
+       }
 }

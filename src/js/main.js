@@ -18,18 +18,17 @@ document.querySelector('#app').innerHTML = `
     <!-- Currency Converter -->
     <div id="currency" class="section active">
         <input type="number" id="amount" placeholder="Enter Amount">
-
         <select id="fromCurrency"></select>
-
         <select id="toCurrency"></select>
-
         <button>Convert</button>
         <div class="result" id="currencyResult"></div>
     </div>
 
     <!-- Metric Converter -->
     <div id="metric" class="section">
-        <input type="number" id="metricValue" placeholder="Enter Value">
+        <select id="categories" >
+           <option> -- select a category -- </option>
+        </select>
 
         <select id="metricType">
             <option value="km-miles">Kilometers to Miles</option>
