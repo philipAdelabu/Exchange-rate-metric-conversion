@@ -1,6 +1,7 @@
 import '../css/style.css';
 import '../css/loader.css';
 
+
 import viteLogo from '/images/vite.svg'
 import init from "./convert.js";
 
@@ -9,7 +10,7 @@ document.querySelector('#app').innerHTML = `
    
 <div class="container">
     <h2>Converter</h2>
-
+    <p id="saved"></p>
     <div class="tabs">
         <div id="currencyTab" class="tab active">Currency</div>
         <div id="metricTab" class="tab">Metric</div>

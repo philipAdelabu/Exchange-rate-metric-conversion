@@ -7,26 +7,30 @@ export function switchTab(tab) {
 
         if (tab === 'currency') {
             loadAnimation();
+            document.getElementById('saved').innerText = "";
             document.getElementById('currencyResult').innerText = "";
             const lastCurrencyConversion = getFromStorage('lastCurrencyConversion');
             if(lastCurrencyConversion){
-               document.getElementById('currencyResult').innerText = lastCurrencyConversion;
+               document.getElementById('saved').innerText = "Last saved: " + lastCurrencyConversion;
             }
 
             document.querySelectorAll('.tab')[0].classList.add('active');
             document.getElementById('currency').classList.add('active');
         } else {
-             loadAnimation(true);
+              document.getElementById('saved').innerText = "";
             document.getElementById('metricResult').innerText = "";
             document.getElementById('FromMetricType').innerHTML = "";
             document.getElementById('ToMetricType').innerHTML = "";
             document.getElementById('metricValue').value = "";
             document.getElementById('category').value = "";
-           
             getCategories();
+            const lastMetricConversion = getFromStorage('lastMetricConversion');
+            if(lastMetricConversion){
+               document.getElementById('saved').innerText = "Last saved: " + lastMetricConversion;
+           }
             document.querySelectorAll('.tab')[1].classList.add('active');
             document.getElementById('metric').classList.add('active');
-            loadAnimation(false);
+           
         }
     }
 
@@ -87,7 +91,7 @@ export function switchTab(tab) {
     }
 
     export async function getCategories(){
-        loadAnimation(true)
+      
        const URL = MetricBaseURL+"categories";
        const resp = await fetch(URL);
        const res = await resp.json();
@@ -127,7 +131,7 @@ export function switchTab(tab) {
         });
 
        }
-       loadAnimation(false);
+     
     }
 
     export async function getMetricResult(from, to, value, category){
